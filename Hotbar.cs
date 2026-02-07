@@ -38,17 +38,30 @@ namespace InventoryFramework
                 }
             }
 
-            foreach (var slot in slots)
+            while (amount > 0)
             {
-                if (slot.IsEmpty)
+                InventorySlot emptySlot = null;
+                foreach (var slot in slots)
                 {
-                    slot.item = newItem;
-                    slot.count = amount;
-                    return true;
+                    if (slot.IsEmpty)
+                    {
+                        emptySlot = slot;
+                        break;
+                    }
                 }
+
+                if (emptySlot == null)
+                {
+                    return false;
+                }
+
+                int add = Mathf.Min(newItem.maxStack, amount);
+                emptySlot.item = newItem;
+                emptySlot.count = add;
+                amount -= add;
             }
 
-            return false;
+            return true;
         }
     }
 

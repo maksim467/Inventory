@@ -177,7 +177,15 @@ namespace InventoryFramework
 
             if (DragContext.draggedItem != null && DragContext.draggedCount > 0)
             {
-                var originalSlot = inventory.slots[DragContext.fromSlotIndex];
+                var originalSlot = GetOriginalSlot();
+                if (originalSlot == null)
+                {
+                    DragContext.draggedItem = null;
+                    DragContext.draggedCount = 0;
+                    RefreshAllUIs();
+                    return;
+                }
+
                 if (originalSlot.IsEmpty)
                 {
                     originalSlot.item = DragContext.draggedItem;
@@ -295,4 +303,3 @@ namespace InventoryFramework
     }
 
 }
-
