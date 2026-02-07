@@ -34,18 +34,30 @@ namespace InventoryFramework
             }
 
             // Add to empty slot
-            foreach (var slot in slots)
+            while (amount > 0)
             {
-                if (slot.IsEmpty)
+                InventorySlot emptySlot = null;
+                foreach (var slot in slots)
                 {
-                    slot.item = newItem;
-                    slot.count = amount;
-
-                    return true;
+                    if (slot.IsEmpty)
+                    {
+                        emptySlot = slot;
+                        break;
+                    }
                 }
+
+                if (emptySlot == null)
+                {
+                    return false; // Inventory is full
+                }
+
+                int add = Mathf.Min(newItem.maxStack, amount);
+                emptySlot.item = newItem;
+                emptySlot.count = add;
+                amount -= add;
             }
 
-            return false; // Inventory is full
+            return true;
         }
 
         public void MoveOrSwap(int from, int to)
